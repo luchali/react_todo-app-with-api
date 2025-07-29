@@ -117,6 +117,8 @@ export const App: React.FC = () => {
   }
 
   function updateTodo(itemToUpdate: Todo) {
+    setLoadingTodoIds(prev => [...prev, itemToUpdate.id]);
+
     return apiUpdateTodo(itemToUpdate)
       .then(updatedTodo => {
         setTodoList(currentTodoList =>
@@ -127,8 +129,23 @@ export const App: React.FC = () => {
       })
       .catch(() => {
         setErrorMessage(ErrorMessages.updateError || 'Unable to update todo');
+      })
+      .finally(() => {
+        setLoadingTodoIds(prev => prev.filter(id => id !== itemToUpdate.id));
       });
   }
+
+  const toggleAllTodos = () => {
+    const areAllCompleted = todoList.every(todo => todo.completed);
+
+    const todosToUpdate = todoList.filter(
+      todo => todo.completed === areAllCompleted,
+    );
+
+    todosToUpdate.forEach(todo => {
+      updateTodo({ ...todo, completed: !areAllCompleted });
+    });
+  };
 
   if (!USER_ID) {
     return <UserWarning />;
@@ -143,6 +160,8 @@ export const App: React.FC = () => {
           title={title}
           onChange={setTitle}
           onAdd={addTodo}
+          todoList={todoList}
+          toggleAllTodos={toggleAllTodos}
           inputRef={inputRef}
           disabled={isLoading}
         />

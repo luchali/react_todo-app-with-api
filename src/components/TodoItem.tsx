@@ -29,8 +29,17 @@ export const TodoItem: React.FC<Props> = ({
   }, [isEditing]);
 
   const handleEditSubmit = () => {
-    if (editedTitle.trim() === '') {
+    const trimmedTitle = editedTitle.trim();
+
+    if (trimmedTitle === '') {
       setEditedTitle(todo.title);
+      setIsEditing(false);
+      deleteTodo(todo.id);
+
+      return;
+    }
+
+    if (trimmedTitle === todo.title) {
       setIsEditing(false);
 
       return;
@@ -78,7 +87,7 @@ export const TodoItem: React.FC<Props> = ({
           ref={inputRef}
           className="todo__title-field"
           value={editedTitle}
-          data-cy="TodoTitleInput"
+          data-cy="TodoTitleField"
           onChange={e => setEditedTitle(e.target.value)}
           onBlur={handleEditSubmit}
           onKeyDown={handleKeyDown}
@@ -97,15 +106,17 @@ export const TodoItem: React.FC<Props> = ({
       )}
 
       {/* Remove button appears only on hover */}
-      <button
-        type="button"
-        className="todo__remove"
-        data-cy="TodoDelete"
-        onClick={() => deleteTodo(todo.id)}
-        disabled={isLoading}
-      >
-        ×
-      </button>
+      {!isEditing && (
+        <button
+          type="button"
+          className="todo__remove"
+          data-cy="TodoDelete"
+          onClick={() => deleteTodo(todo.id)}
+          disabled={isLoading}
+        >
+          ×
+        </button>
+      )}
 
       {/* overlay will cover the todo while it is being deleted or updated */}
       <div
