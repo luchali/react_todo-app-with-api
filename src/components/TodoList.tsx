@@ -2,6 +2,7 @@ import React from 'react';
 import { Todo } from '../types/Todo';
 import { FilterType } from '../types/FilterType';
 import { TodoItem } from './TodoItem';
+import { ErrorMessages } from '../types/ErrorMessages';
 
 type Props = {
   todoList: Todo[];
@@ -9,6 +10,7 @@ type Props = {
   deleteTodo: (todoId: number) => void;
   currentFilter: FilterType;
   updateTodo: (todo: Todo) => void;
+  setErrorMessage: (message: ErrorMessages) => void;
 };
 
 export const TodoList: React.FC<Props> = ({
@@ -17,6 +19,7 @@ export const TodoList: React.FC<Props> = ({
   deleteTodo,
   currentFilter,
   updateTodo,
+  setErrorMessage,
 }) => {
   const filteredTodos = todoList.filter(todo => {
     switch (currentFilter) {
@@ -40,6 +43,7 @@ export const TodoList: React.FC<Props> = ({
           deleteTodo={deleteTodo}
           isLoading={loadingTodoIds.includes(todo.id)}
           updateTodo={newTodo => updateTodo(newTodo)}
+          setErrorMessage={setErrorMessage}
         />
       ))}
     </section>

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Todo } from '../types/Todo';
 import classNames from 'classnames';
+import { ErrorMessages } from '../types/ErrorMessages';
 
 type Props = {
   todo: Todo;
@@ -8,6 +9,7 @@ type Props = {
   isTemp?: boolean;
   isLoading?: boolean;
   updateTodo?: (todo: Todo) => void;
+  setErrorMessage?: (message: ErrorMessages) => void;
 };
 
 export const TodoItem: React.FC<Props> = ({
@@ -15,6 +17,7 @@ export const TodoItem: React.FC<Props> = ({
   deleteTodo,
   isLoading,
   updateTodo,
+  setErrorMessage = () => {},
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(todo.title);
@@ -28,12 +31,12 @@ export const TodoItem: React.FC<Props> = ({
     }
   }, [isEditing]);
 
-  const handleEditSubmit = () => {
+  const handleEditSubmit = async () => {
     const trimmedTitle = editedTitle.trim();
 
     if (trimmedTitle === '') {
       setEditedTitle(todo.title);
-      setIsEditing(false);
+      // setIsEditing(false);
       deleteTodo(todo.id);
 
       return;
@@ -46,10 +49,14 @@ export const TodoItem: React.FC<Props> = ({
     }
 
     if (editedTitle !== todo.title) {
-      updateTodo?.({ ...todo, title: editedTitle.trim() });
+      try {
+        await updateTodo?.({ ...todo, title: editedTitle.trim() });
+        setIsEditing(false);
+      } catch {
+        setErrorMessage?.(ErrorMessages.updateError);
+        setEditedTitle(todo.title);
+      }
     }
-
-    setIsEditing(false);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {

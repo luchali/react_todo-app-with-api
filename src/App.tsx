@@ -172,6 +172,7 @@ export const App: React.FC = () => {
           currentFilter={currentFilter}
           deleteTodo={deleteTodo}
           updateTodo={updateTodo}
+          setErrorMessage={setErrorMessage}
         />
 
         {tempTodo && (
@@ -180,6 +181,7 @@ export const App: React.FC = () => {
             deleteTodo={() => {}}
             isLoading={true}
             updateTodo={updateTodo}
+            setErrorMessage={setErrorMessage}
           />
         )}
 
