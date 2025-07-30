@@ -129,6 +129,7 @@ export const App: React.FC = () => {
       })
       .catch(() => {
         setErrorMessage(ErrorMessages.updateError || 'Unable to update todo');
+        throw new Error();
       })
       .finally(() => {
         setLoadingTodoIds(prev => prev.filter(id => id !== itemToUpdate.id));
@@ -143,7 +144,11 @@ export const App: React.FC = () => {
     );
 
     todosToUpdate.forEach(todo => {
-      updateTodo({ ...todo, completed: !areAllCompleted });
+      try {
+        updateTodo({ ...todo, completed: !areAllCompleted });
+      } catch (error) {
+        throw new Error('Unable to toggle all todos', { cause: error });
+      }
     });
   };
 
