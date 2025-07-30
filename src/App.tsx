@@ -147,7 +147,7 @@ export const App: React.FC = () => {
       try {
         updateTodo({ ...todo, completed: !areAllCompleted });
       } catch (error) {
-        throw new Error('Unable to toggle all todos', { cause: error });
+        setErrorMessage(ErrorMessages.updateError || 'Unable to toggle todos');
       }
     });
   };

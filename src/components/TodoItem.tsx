@@ -54,7 +54,6 @@ export const TodoItem: React.FC<Props> = ({
         setIsEditing(false);
       } catch {
         setErrorMessage?.(ErrorMessages.updateError);
-        setEditedTitle(todo.title);
       }
     }
   };
